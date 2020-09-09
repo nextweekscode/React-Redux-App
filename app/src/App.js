@@ -1,26 +1,30 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect} from 'react';
+import SpellList from './components/spellList'
+import { connect } from "react-redux"
+import { fetchSpells } from './store/actions/spellsActions'
+
 import './App.css';
 
-function App() {
+function App({ fetchSpells, loadingSpells, errorMessage}) {
+  useEffect(() => {
+    fetchSpells()
+  }, [fetchSpells])
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Welcome to the worlds 104,000th DnD Spell List!</h1>
+      <h2>We now have ALL 319 spells!</h2>
+      {!loadingSpells ? <SpellList/> : <div>....Searching in SpellBook</div>}
+      {errorMessage !== "" ? <div>{errorMessage}</div> : null}
+      
+
     </div>
   );
 }
-
-export default App;
+function mapStateToProps(state){
+  return {
+    loadingSpells: state.loadingSpells,
+    errorMessage: state.errorMessage
+    
+  }
+}
+export default connect(mapStateToProps, { fetchSpells })(App);
